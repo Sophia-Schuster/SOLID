@@ -1,5 +1,6 @@
-# SOLID
-Trabalho final de Programação Orientada a Objetos Avançada (POOA), matéria ministrada por professor Delano. Autor: Sophia Santonastasio Schuster RA: 760936
+Programação Orientada a Objetos Avançada Trabalho final.
+Matéria ministrada por professor Delano. 
+Autor: Sophia Santonastasio Schuster RA: 760936
 
 Conteudo
 ========
@@ -10,6 +11,7 @@ Conteudo
  * [Liskov Substitution Principle]
  * [Interface Segregation Principle]
  * [Dependency Inversion Principle]
+ * [Descrição Arquitetural]
  * [Discussões]
  * [O que é o princípio da inversão de dependência?]
  * [O que é injeção de dependência?]
