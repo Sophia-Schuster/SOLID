@@ -255,11 +255,38 @@ void ResultadoAluno::imprime() {
 ```
 Esse principio LSP nos permite garantir que os "filhos" (subclasses) de cada "pai" (classe) consigam fazer o trabalho de seus pais sem problemas, isso é extremamente benefico pois nos da total liberdade para estender as implementações como eu quiser. 
 
-### Interface Segregation Principle
+### Interface Segregation Principle (ISP)
 Uma classe não deve ser forçada a implementar métodos que não ira utilizar. 
 
 Esse principio simplesmente nos fala que é melhor ter interfaces mais especificas do que ter interfaces genéricas que irão forçar classes a implementar um metódo que elas não deveriam ter! 
 
+Por exemplo:
+Antigo ResultadoAluno.h
+```source.c++
+class ResultadoAluno : public Pessoa {
+public:
+    ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
+    virtual ~ResultadoAluno();//destrutor
+    virtual void imprime(); //Essa funcao imprimira os dados dos alunos. 
+    double calculoMedia(); //essa funcao calculara a media do aluno
+    bool mediaAprovado(); //essa funcao dira se o aluno foi aprovado ou nao
+    float calculoFrequencia(); //essa funcao calcula a frequencia
+    bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
+private: //atributos foram declarados no privado.
+    string nome;
+    long double CPF;
+    int totalTarefas;
+    int tarefasFeitas;
+    int p1;
+    int p2;
+    int peso1;
+    int peso2;
+};
+```
+
+Nessa versão antiga da nossa classe ResultadoAluno (antes de aplicar os principios) temos uma classe extremamente genérica. Agora imagine que queiramos em uma nova classe imprimir o resultado de um aluno considerando apenas sua media e não sua frequencia... Acabariamos em uma situação extremamente desagradavel. Sendo forçados a implementar novamente funções como calculoMedia e mediaAprovado ou a utilizar a classe ResultadoAluno porém sem que o calculoFrequencia e o frequenciaAprovada se apliquem a nossa nova classe. 
+
+Porém, graças aos principios mencionados anteriormente esses problemas já foram evitados. Para seguir o Single Responsiblity Principle separamos nossa classe em diversas outras classes e com o Liskov Substitution Principle estamos garantindo que nosso programa tenha abstrações no nível certo. Com isso temos agora uma classe para Media e Frequencia, sendo possivel ter uma classe de Resultado que herde apenas a Media e nada alem do desejado. Esse é um ótimo exemplo de como os principios se comunicam entre si, seguindo um efeito dominó. 
 
 ### Dependency Inversion Principle
 
