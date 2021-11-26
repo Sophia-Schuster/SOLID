@@ -288,9 +288,82 @@ private: //atributos foram declarados no privado.
 
 Nessa versão antiga da nossa classe ResultadoAluno (antes de aplicar os principios) temos uma classe extremamente genérica. Agora imagine que queiramos em uma nova classe imprimir o resultado de um aluno considerando apenas sua media e não sua frequencia... Acabariamos em uma situação extremamente desagradavel. Sendo forçados a implementar novamente funções como calculoMedia e mediaAprovado ou a utilizar a classe ResultadoAluno porém sem que o calculoFrequencia e o frequenciaAprovada se apliquem a nossa nova classe. 
 
-Porém, graças aos principios mencionados anteriormente esses problemas já foram evitados. Para seguir o Single Responsiblity Principle separamos nossa classe em diversas outras classes e com o Liskov Substitution Principle estamos garantindo que nosso programa tenha abstrações no nível certo. Com isso temos agora uma classe para Media e Frequencia, sendo possivel ter uma classe de Resultado que herde apenas a Media e nada alem do desejado. Esse é um ótimo exemplo de como os principios se comunicam entre si, seguindo um efeito dominó. 
+Porém, graças aos principios mencionados anteriormente esses problemas já foram evitados. Para seguir o Single Responsiblity Principle separamos nossa classe em diversas outras classes e com o Liskov Substitution Principle estamos garantindo que nosso programa tenha abstrações no nível certo. Com isso temos agora uma classe para Media:
 
-### Dependency Inversion Principle
+Media.h
+```source.c++
+class Media {
+public:
+    Media(int p1, int p2, int peso1, int peso2);//construtor
+    virtual ~Media();//destrutor
+    double calculoMedia(); //essa funcao calculara a media do aluno
+    bool mediaAprovado(); //essa funcao dira se a media esta acima de 6
+    virtual void imprime(); //Essa funcao imprimira o resultado da media
+private: //os atributos foram declarados no privado
+    int p1;
+    int p2;
+    int peso1;
+    int peso2;
+};
+```
+Tornando possivel ter uma classe de Resultado que herde apenas a Media e nada alem do desejado. Esse é um ótimo exemplo de como os principios se comunicam entre si, seguindo um efeito dominó. 
+
+### Dependency Inversion Principle (DIP)
+Não dependa de implementações e sim de abstrações
+
+Esse principio defende que um módulo não deve depender diretamente de detalhes de implementação de outro modulo, na verdade deve existir uma abstração ali no meio para intermediar essa dependencia. 
+
+Esse principio, assim como no exemplo do principio anterior, é ótimo para mostrar como os principios se comunicam entre si. Isso porque se seguirmos corretamente o Single Responsiblity Principle e o Liskov Substitution Principle o ultimo principio DIP provavelmente já estara sendo aplicado. 
+
+Vamos explicar melhor exemplificando: 
+
+Antigo ResultadoAluno.h
+```source.c++
+class ResultadoAluno : public Pessoa {
+public:
+    ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
+    virtual ~ResultadoAluno();//destrutor
+    virtual void imprime(); //Essa funcao imprimira os dados dos alunos. 
+    double calculoMedia(); //essa funcao calculara a media do aluno
+    bool mediaAprovado(); //essa funcao dira se o aluno foi aprovado ou nao
+    float calculoFrequencia(); //essa funcao calcula a frequencia
+    bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
+private: //atributos foram declarados no privado.
+    string nome;
+    long double CPF;
+    int totalTarefas;
+    int tarefasFeitas;
+    int p1;
+    int p2;
+    int peso1;
+    int peso2;
+};
+```
+Antes de aplicar os principios SOLID tinhamos a classe ResultadoAluno acima. A classe calcula o resultado do aluno (aprovado ou não) baseada em suas próprias funções, como calculoMedia e calculoFrequencia. Porém o ideal para seguir o principio DIP seria que para calcular o resultado utilizassemos uma abstração, pois assim poderiamos calcular o resultado com outras ferramentas que forem dadas para a classe ResultadoAluno.
+
+Após aplicar os principios ficamos com uma nova classe:
+Novo ResultadoAluno.h 
+```source.c++
+class ResultadoAluno : public Pessoa, public Media, public Frequencia {
+public:
+    ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
+    virtual ~ResultadoAluno();//destrutor
+    virtual void imprime(); //Essa funcao imprimira os resultados dos alunos. 
+private: //os atributos foram declarados no privado como solicitado.
+    string nome;
+    long double CPF;
+    int totalTarefas;
+    int tarefasFeitas;
+    int p1;
+    int p2;
+    int peso1;
+    int peso2;
+};
+```
+E essa classe utiliza agora de suas "ferramentas" (subclasses) Media e Frequencia para calcular um resultado final. 
+
+### Descrição Arquitetural
+Seguem duas arquiteturas que representam os códigos antes e depois, respectivamente, da aplicação dos principios SOLID:
 
 
 ### Discussões
