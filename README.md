@@ -304,7 +304,7 @@ E essa classe utiliza agora de suas "ferramentas" (subclasses) Media e Frequenci
 
 ### Descrição Arquitetural
 Segue uma arquitetura que representa o código depois da aplicação dos principios SOLID:
-![image](https://user-images.githubusercontent.com/60801559/143664498-19b486f1-6b82-4281-a07e-aa9953787101.png)
+![image](https://user-images.githubusercontent.com/60801559/143664686-63866f87-23d2-4187-990d-04c3bc5a3f87.png)
 
 
 ### Discussões
