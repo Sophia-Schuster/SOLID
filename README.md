@@ -1,4 +1,4 @@
-### SOLID
+# SOLID
 Matéria ministrada por professor Delano. 
 Autor: Sophia Santonastasio Schuster RA: 760936
 
@@ -303,9 +303,9 @@ private: //os atributos foram declarados no privado como solicitado.
 E essa classe utiliza agora de suas "ferramentas" (subclasses) Media e Frequencia para calcular um resultado final. O código assim fica mais maleavel, permitindo com que adicionemos ou extendamos as ferramentas tranquilamente sem afetar o funcionamento de ResultadoAluno.  
 
 ### Descrição Arquitetural
-Segue uma arquitetura que representam o código depois da aplicação dos principios SOLID:
-![image](https://user-images.githubusercontent.com/60801559/143663179-9dd77f95-9a0a-4d1b-9e56-a4a798184a80.png)
-Sendo que poderiamos colocar ResultadoAluno em um módulo Output. Pessoa e Aluno poderiam pertencer ao modulo armazenamentoDeUsuario e Media e Frequencia ao modulo Calculo.  
+Segue uma arquitetura que representa o código depois da aplicação dos principios SOLID:
+![image](https://user-images.githubusercontent.com/60801559/143664457-a856832b-1ba5-45d4-84d6-4ae0ff7e85c2.png)
+
 
 ### Discussões
  Abaixo seguem discussões levantadas com base nos dois artigos abaixo: 
