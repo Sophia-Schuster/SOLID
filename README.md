@@ -1,4 +1,4 @@
-Programação Orientada a Objetos Avançada Trabalho final.
+### SOLID
 Matéria ministrada por professor Delano. 
 Autor: Sophia Santonastasio Schuster RA: 760936
 
@@ -15,7 +15,7 @@ Conteudo
  * [Discussões]
  * [O que é o princípio da inversão de dependência?]
  * [O que é injeção de dependência?]
- * [O que é injeção de dependência?]
+ * [O que é  inversão de controle?]
  * [Qual a relação entre inversão de dependência, inversão de controle e injeção de dependência?]
  
  ### Principios SOLID
@@ -46,7 +46,7 @@ public:
     bool mediaAprovado(); //essa funcao dira se o aluno foi aprovado ou nao
     float calculoFrequencia(); //essa funcao calcula a frequencia
     bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
-private: //atributos foram declarados no privado.
+private: //os atributos foram declarados no privado como solicitado.
     string nome;
     long double CPF;
     int totalTarefas;
@@ -59,13 +59,11 @@ private: //atributos foram declarados no privado.
 ```
 A classe ResultadoAluno realmente retorna o resultado do aluno em termos de aprovação. Porém ela viola o SRP implementada dessa forma.  Se olharmos com cuidado é possivel ver diversos eixos de mudança:
 
-Vamos supor que eu queria mudar a forma como a média é calculada. Ao realizar essa mudança não é necessário que isso impacte no calculo de frequencia por exemplo. Portanto o ideal seria uma classe que realiza o calculo da media. 
-
-Da mesma forma o ideal seria uma classe responsavel para o calculo de frequencia já que se eu decidir por alterar a forma como é feito esse calculo não quero que isso impacte na forma como é impresso os dados do meu aluno. 
+Vamos supor que eu queria mudar a forma como a média é calculada. Ao realizar essa mudança não é necessário que isso impacte no calculo de frequencia por exemplo. Portanto o ideal seria uma classe que realiza o calculo da media. Da mesma forma considerando o inverso o ideal seria uma classe responsavel para o calculo de frequencia também.
 
 Afinal esses eixos são coisas independentes que a mudança de um não deve impactar no outro. 
 
-Olhando para essa analise podemos dividir essa classe para que ela tenha sua própria responsabilidade, adicionando então duas novas classes e deixando essa classe apenas para o resultado final e não para o calculo de frequencia ou media:
+Olhando para essa analise podemos dividir essa classe para que ela tenha sua própria responsabilidade (apenas o resultado final), adicionando então duas novas classes para o calculo de frequencia ou media:
 
 Novo Media.h
 ```source.c++
@@ -75,7 +73,6 @@ public:
     virtual ~Media();//destrutor
     double calculoMedia(); //essa funcao calculara a media do aluno
     bool mediaAprovado(); //essa funcao dira se a media esta acima de 6
-    virtual void imprime(); //Essa funcao imprimira o resultado da media
 private: //os atributos foram declarados no privado
     int p1;
     int p2;
@@ -91,7 +88,6 @@ public:
     virtual ~Frequencia();//destrutor
     float calculoFrequencia(); //essa funcao calcula a frequencia
     bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
-    virtual void imprime(); //Essa funcao imprimira o resultado da frequencia.
 private: //os atributos foram declarados no privado
     int totalTarefas;
     int tarefasFeitas;
@@ -125,7 +121,7 @@ public:
     bool mediaAprovado(); //essa funcao dira se o aluno foi aprovado ou nao
     float calculoFrequencia(); //essa funcao calcula a frequencia
     bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
-private: //atributos foram declarados no privado.
+private: //os atributos foram declarados no privado como solicitado.
     string nome;
     long double CPF;
     int totalTarefas;
@@ -150,7 +146,6 @@ public:
     virtual ~Media();//destrutor
     double calculoMedia(); //essa funcao calculara a media do aluno
     bool mediaAprovado(); //essa funcao dira se a media esta acima de 6
-    virtual void imprime(); //Essa funcao imprimira o resultado da media
 private: //os atributos foram declarados no privado
     int p1;
     int p2;
@@ -168,25 +163,20 @@ O principio LSP mostra que idealmente se temos A como subtipo de B então deve s
 
 Mas como aplicamos esse principio em nosso código? Vamos a um exemplo. 
 
-Novo ResultadoAluno.h 
+Novo Aluno.h 
 ```source.c++
-class ResultadoAluno : public Pessoa, public Media, public Frequencia {
-public:
-    ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
-    virtual ~ResultadoAluno();//destrutor
-    virtual void imprime(); //Essa funcao imprimira os resultados dos alunos. 
-private: //os atributos foram declarados no privado como solicitado.
-    string nome;
-    long double CPF;
-    int totalTarefas;
-    int tarefasFeitas;
-    int p1;
-    int p2;
-    int peso1;
-    int peso2;
+class Aluno : public Pessoa {
+public://todo mundo ve. 
+    Aluno(string nome, long double CPF, long double RA); // construtor, deve ficar publico
+    virtual ~Aluno();//destrutor
+    long double getRA(); //funcao que ira pegar o RA da pessoa. 
+private: 
+    int CPF; //atributos, podem ficar privados. 
+    string nome; 
+    long double RA;
 };
 ```
-Nossa nova classe ResultadoAluno já esta de acordo com o LSP, pois ela possui três subclasses:
+Nossa nova classe Aluno já esta de acordo com o LSP, veja a subclasse Pessoa:
 
 Pessoa.h
 ```source.c++
@@ -197,70 +187,20 @@ public://todo mundo ve.
     long double getCPF(); //funcao que ira pegar o CPF da pessoa. 
     string getNome(); //funcao que ira pegar o nome da pessoa.
     //funcoes devem ficar publicas. 
-   virtual void imprime(); //Essa funcao imprimira os dados das pessoas. 
 private: 
     long double CPF; //atributos, podem ficar privados. 
     string nome; 
 };
 ```
-Media.h
-```source.c++
-class Media {
-public:
-    Media(int p1, int p2, int peso1, int peso2);//construtor
-    virtual ~Media();//destrutor
-    double calculoMedia(); //essa funcao calculara a media do aluno
-    bool mediaAprovado(); //essa funcao dira se a media esta acima de 6
-    virtual void imprime(); //Essa funcao imprimira o resultado da media
-private: //os atributos foram declarados no privado
-    int p1;
-    int p2;
-    int peso1;
-    int peso2;
-};
-```
-Frequencia.h
-```source.c++
-class Frequencia {
-public:
-    Frequencia(int totalTarefas, int tarefasFeitas);//construtor
-    virtual ~Frequencia();//destrutor
-    float calculoFrequencia(); //essa funcao calcula a frequencia
-    bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
-    virtual void imprime(); //Essa funcao imprimira o resultado da frequencia.
-private: //os atributos foram declarados no privado
-    int totalTarefas;
-    int tarefasFeitas;
-};
-```
 
-E essas três subclasses compõem exatamente a classe pai ResultadoAluno. Por isso eu posso tranquilamente utilizar os metódos de suas subclasses para imprimir os dados além de utilizar os dados de suas subclasses para obter informações como por exemplo se o aluno já foi aprovado:
+A subclasse Aluno é composta exatamente da classe Pessoa. Pois uma Pessoa possui Nome e CPF, assim como o Aluno que além de possuir Nome e CPF possui RA. Por isso eu posso tranquilamente utilizar metódos na subclasse para executar uma tarefa para a classe Pessoa.
 
-ResultadoAluno.cpp
-```source.c++
-ResultadoAluno::ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2) : 
-    Pessoa(nome,CPF), Frequencia(totalTarefas, tarefasFeitas), Media(p1,p2, peso1, peso2)  {
-} //implementacao do construtor
-
-void ResultadoAluno::imprime() {
-    Pessoa::imprime();
-    Media::imprime();
-    Frequencia::imprime();
-    cout << "[Resultado Final] ";
-    cout << endl;
-    if (Media::mediaAprovado() && !Frequencia::frequenciaAprovada()) {
-        cout << "Aluno aprovado" << endl;
-    } 
-    //...
-} 
-// implementacao da funcao imprime, que imprimira nome e cpf de cada aluno, usando o metodo ja feito na classe pessoa, e seus resultados.
-```
-Esse principio LSP nos permite garantir que os "filhos" (subclasses) de cada "pai" (classe) consigam fazer o trabalho de seus pais sem problemas, isso é extremamente benefico pois nos da total liberdade para estender as implementações como eu quiser. 
+Esse principio LSP nos permite garantir que os "filhos" (subclasses) de cada "pai" (classe) consigam fazer o trabalho de seus pais sem problemas, isso é extremamente benefico pois nos da total liberdade para estender as implementações como quisermos. 
 
 ### Interface Segregation Principle (ISP)
 Uma classe não deve ser forçada a implementar métodos que não ira utilizar. 
 
-Esse principio simplesmente nos fala que é melhor ter interfaces mais especificas do que ter interfaces genéricas que irão forçar classes a implementar um metódo que elas não deveriam ter! 
+Esse principio simplesmente nos fala que é melhor ter interfaces mais especificas do que ter interfaces genéricas que irão forçar classes a implementar um metódo que elas não deveriam! 
 
 Por exemplo:
 Antigo ResultadoAluno.h
@@ -274,7 +214,7 @@ public:
     bool mediaAprovado(); //essa funcao dira se o aluno foi aprovado ou nao
     float calculoFrequencia(); //essa funcao calcula a frequencia
     bool frequenciaAprovada(); //essa funcao dira se o aluno foi reprovado por falta (menos que 75% de frequencia) ou nao
-private: //atributos foram declarados no privado.
+private: //os atributos foram declarados no privado como solicitado.
     string nome;
     long double CPF;
     int totalTarefas;
@@ -298,7 +238,6 @@ public:
     virtual ~Media();//destrutor
     double calculoMedia(); //essa funcao calculara a media do aluno
     bool mediaAprovado(); //essa funcao dira se a media esta acima de 6
-    virtual void imprime(); //Essa funcao imprimira o resultado da media
 private: //os atributos foram declarados no privado
     int p1;
     int p2;
@@ -306,7 +245,7 @@ private: //os atributos foram declarados no privado
     int peso2;
 };
 ```
-Tornando possivel ter uma classe de Resultado que herde apenas a Media e nada alem do desejado. Esse é um ótimo exemplo de como os principios se comunicam entre si, seguindo um efeito dominó. 
+Tornando possivel ter uma classe que herde apenas a Media e nada alem do desejado. Esse é um ótimo exemplo de como os principios se comunicam entre si, seguindo um efeito dominó. 
 
 ### Dependency Inversion Principle (DIP)
 Não dependa de implementações e sim de abstrações
@@ -339,19 +278,20 @@ private: //atributos foram declarados no privado.
     int peso2;
 };
 ```
-Antes de aplicar os principios SOLID tinhamos a classe ResultadoAluno acima. A classe calcula o resultado do aluno (aprovado ou não) baseada em suas próprias funções, como calculoMedia e calculoFrequencia. Porém o ideal para seguir o principio DIP seria que para calcular o resultado utilizassemos uma abstração, pois assim poderiamos calcular o resultado com outras ferramentas que forem dadas para a classe ResultadoAluno.
+Antes de aplicar os principios SOLID tinhamos a classe ResultadoAluno acima. A classe calcula o resultado do aluno (aprovado ou não) baseada em suas próprias funções, como calculoMedia e calculoFrequencia. Porém o ideal para seguir o principio DIP seria que para calcular o resultado utilizassemos uma abstração, pois assim poderiamos calcular o resultado facilmente com diversas outras ferramentas que forem dadas para a classe ResultadoAluno.
 
 Após aplicar os principios ficamos com uma nova classe:
 Novo ResultadoAluno.h 
 ```source.c++
-class ResultadoAluno : public Pessoa, public Media, public Frequencia {
+class ResultadoAluno : public Aluno, public Media, public Frequencia {
 public:
-    ResultadoAluno(string nome, long double CPF, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
+    ResultadoAluno(string nome, long double CPF, long double RA, int totalTarefas, int tarefasFeitas, int p1, int p2, int peso1, int peso2);//construtor
     virtual ~ResultadoAluno();//destrutor
     virtual void imprime(); //Essa funcao imprimira os resultados dos alunos. 
 private: //os atributos foram declarados no privado como solicitado.
     string nome;
     long double CPF;
+    long double RA;
     int totalTarefas;
     int tarefasFeitas;
     int p1;
@@ -360,23 +300,30 @@ private: //os atributos foram declarados no privado como solicitado.
     int peso2;
 };
 ```
-E essa classe utiliza agora de suas "ferramentas" (subclasses) Media e Frequencia para calcular um resultado final. 
+E essa classe utiliza agora de suas "ferramentas" (subclasses) Media e Frequencia para calcular um resultado final. O código assim fica mais maleavel, permitindo com que adicionemos ou extendamos as ferramentas tranquilamente sem afetar o funcionamento de ResultadoAluno.  
 
 ### Descrição Arquitetural
-Seguem duas arquiteturas que representam os códigos antes e depois, respectivamente, da aplicação dos principios SOLID:
-
+Segue uma arquitetura que representam o código depois da aplicação dos principios SOLID:
+![image](https://user-images.githubusercontent.com/60801559/143663179-9dd77f95-9a0a-4d1b-9e56-a4a798184a80.png)
+Sendo que poderiamos colocar ResultadoAluno em um módulo Output. Pessoa e Aluno poderiam pertencer ao modulo armazenamentoDeUsuario e Media e Frequencia ao modulo Calculo.  
 
 ### Discussões
- 
+ Abaixo seguem discussões levantadas com base nos dois artigos abaixo: 
+- Martin Fowler. Inversion of Control. martinfowler.com, 2005.
+ https://martinfowler.com/bliki/InversionOfControl.html
+- Martin Fowler. Inversion of Control Containers and the Dependency Injection pattern.
+ martinfowler.com, 2004.
+ https://martinfowler.com/articles/injection.html
  
 ### O que é o princípio da inversão de dependência?
+O principío da inversao de dependencia foi apresentado nesse artigo como Dependency Inversion Principle (DIP). Como já mencionado esse principio defende que um módulo não deve depender diretamente de detalhes de implementação de outro modulo, na verdade deve existir uma abstração ali no meio para intermediar essa dependencia. 
 
+### O que é  inversão de controle?
+Inversão de controle é um comportamento que se faz presente especialmente quando usamos frameworks. Na inversão de controle os frameworks organizam por si só a coordenação e sequenciamento das atividades da aplicação. 
 
 ### O que é injeção de dependência?
-
-
-### O que é injeção de dependência?
-
+A injeção de dependencia desacopla classes, evitando dependencia direta entre elas. 
 
 ### Qual a relação entre inversão de dependência, inversão de controle e injeção de dependência?
+A injeção de dependencia é um tipo de inversão de controle, pois ela define que uma classe não é mais responsavel por buscar objetos da qual depende. Ao aplicarmos a injeção de dependencia estamos tambem seguindo o principío da inversão de dependencia, pois visamos reduzir o nível de acoplamento entre diferentes modulos de um sistema estaremos que é justamente o objetivo do DIP; 
 
